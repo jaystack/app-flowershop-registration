@@ -18,7 +18,7 @@ function getUserObj(body: any) {
   }
 }
 
-function insertToDb(userObj) {
+function insertToDb(userObj):void {
   const user = new User(userObj);
 
   user.save((error: Error) => {
