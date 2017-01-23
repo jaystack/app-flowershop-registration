@@ -1,2 +1,2 @@
-# service-flowershop-registration
+# app-flowershop-registration
 Registration service for the flowershop application
