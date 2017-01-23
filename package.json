@@ -1,5 +1,5 @@
 {
-  "name": "app-flowershop-registration",
+  "name": "service-flowershop-registration",
   "version": "1.0.0",
   "description": "Registration service for the flowershop application",
   "main": "lib/server.js",
@@ -21,13 +21,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jaystack/app-flowershop-registration.git"
+    "url": "git+https://github.com/jaystack/service-flowershop-registration.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jaystack/app-flowershop-registration/issues"
+    "url": "https://github.com/jaystack/service-flowershop-registration/issues"
   },
-  "homepage": "https://github.com/jaystack/app-flowershop-registration#readme"
+  "homepage": "https://github.com/jaystack/service-flowershop-registration#readme"
 }
