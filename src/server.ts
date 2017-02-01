@@ -27,6 +27,17 @@ function insertToDb(userObj):void {
   });
 }
 
+function createMongoConnetionString({host, port, db}, endpointAddress: string) {
+  const address = endpointAddress || `${host}:${port}`;
+  return `mongodb://${address}/${db}`;
+}
+
+function createMongoConnection(mongoConfig) {
+  const endpointAddress = getServiceAddress('localhost:27017');
+  const connectionUri = createMongoConnetionString(mongoConfig, endpointAddress);
+  mongoose.connect(connectionUri);
+}
+
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -43,5 +54,6 @@ app.post('/registration', (req, res, next) => {
 
 app.listen(3007, () => {
   console.log('Registration service has started! Port: 3007');
-  mongoose.connect(config.get('mongodb.uri'));
+  const mongoConfig = config.get('mongodb')
+  createMongoConnection(mongoConfig)
 });
