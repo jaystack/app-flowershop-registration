@@ -6,7 +6,10 @@ import System from 'corpjs-system'
 import Logger from 'corpjs-logger'
 import MongoDb from 'corpjs-mongodb'
 
-export default new System({ exitOnError: false })
+const inDevelopment = process.env.NODE_ENV === 'dev'
+process.on('unhandledRejection', err => console.error(err))
+
+export default new System({ exitOnError: !inDevelopment })
     .add('config', new Config()
         .add(config => loaders.require({ path: './config/default.js', mandatory: true })))
     .add('logger', Logger()).dependsOn({ component: 'config', source: 'logger', as: 'config' })
