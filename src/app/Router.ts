@@ -7,6 +7,7 @@ import * as mongoose from 'mongoose';
 export default function Router() {
   return {
     async start({ app, endpoints, logger, mongodb: db }) {
+      const { getServiceAddress } = endpoints
       app.use(bodyParser.json());
       app.use(bodyParser.urlencoded({ extended: false }));
       app.use(express.static('public'));
@@ -29,10 +30,19 @@ export default function Router() {
         const userObj = getUserObj(req.body);
         user.insertOne(userObj)
           .then(result => {
-            return res.send('Successful registration!')
+            //return res.send('Successful registration!')
+            console.log(`then: http://${getServiceAddress('localhost:9000')}/`)
+            // res.writeHead(201, {Location: `http://${getServiceAddress('localhost:9000')}/`})
+            // return res.end()
+            return res.redirect(`http://${getServiceAddress('localhost:9000')}/`)
           })
           .catch(err => {
-            return res.sendStatus(500)
+            //return res.sendStatus(500)
+            console.log(`catch: http://${getServiceAddress('localhost:9000')}/`)
+            console.log(err)
+            // res.writeHead(500, {Location: `http://${getServiceAddress('localhost:9000')}/`})
+            // return res.end()
+            return res.redirect(`http://${getServiceAddress('localhost:9000')}/`)
           })
       });
     }
