@@ -31,15 +31,15 @@ export default function Router() {
         user.insertOne(userObj)
           .then(result => {
             //return res.send('Successful registration!')
-            console.log(`then: http://${getServiceAddress('localhost:9000')}/`)
+            // console.log(`then: http://${getServiceAddress('localhost:9000')}/`)
             // res.writeHead(201, {Location: `http://${getServiceAddress('localhost:9000')}/`})
             // return res.end()
             return res.redirect(`http://${getServiceAddress('localhost:9000')}/`)
           })
           .catch(err => {
             //return res.sendStatus(500)
-            console.log(`catch: http://${getServiceAddress('localhost:9000')}/`)
-            console.log(err)
+            // console.log(`catch: http://${getServiceAddress('localhost:9000')}/`)
+            // console.log(err)
             // res.writeHead(500, {Location: `http://${getServiceAddress('localhost:9000')}/`})
             // return res.end()
             return res.redirect(`http://${getServiceAddress('localhost:9000')}/`)
