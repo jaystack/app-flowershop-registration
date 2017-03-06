@@ -5,23 +5,20 @@
   "main": "lib/app/index",
   "typings": "lib/app/index",
   "dependencies": {
-    "body-parser": "^1.16.0",
-    "config": "^1.24.0",
-    "cookie-parser": "latest",
-    "corpjs-amqp": "latest",
-    "corpjs-config": "latest",
-    "corpjs-endpoints": "latest",
-    "corpjs-express": "latest",
-    "corpjs-logger": "latest",
-    "corpjs-system": "latest",
-    "corpjs-mongodb": "latest",
-    "express": "^4.14.0",
-    "mongoose": "^4.7.7",
-    "system-endpoints": "~0.0.5"
+    "body-parser": "1.17.1",
+    "cookie-parser": "1.4.3",
+    "corpjs-amqp": "0.0.6",
+    "corpjs-config": "0.0.11",
+    "corpjs-endpoints": "0.0.13",
+    "corpjs-express": "0.0.9",
+    "corpjs-logger": "0.0.13",
+    "corpjs-mongodb": "0.0.5",
+    "corpjs-system": "0.0.36",
+    "express": "4.14.0"
   },
   "devDependencies": {
     "@types/node-uuid": "0.0.28",
-    "typescript": "2.1.5"
+    "typescript": "2.2.1"
   },
   "scripts": {
     "start": "node .",
