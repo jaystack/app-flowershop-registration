@@ -14,7 +14,8 @@
     "corpjs-logger": "0.0.13",
     "corpjs-mongodb": "0.0.5",
     "corpjs-system": "0.0.36",
-    "express": "4.14.0"
+    "express": "4.14.0",
+    "mongoose": "^4.7.7"
   },
   "devDependencies": {
     "@types/node-uuid": "0.0.28",
