@@ -1,0 +1,37 @@
+<section class="container">
+	<h3>Flower Shop <sup><i class="icon-leaf"></i></sup></h3>
+	{{^checkout}}
+	<section cx-url="\{{server:cart}}/cart/summary"></section>
+	{{/checkout}} {{#checkout}}
+	<section cx-url="\{{server:cart}}/cart/checkout"></section>
+	{{/checkout}}
+	<p class="lead muted">With this Application you can buy your favorite flower as a gift or for your home, it's up to you! Check out our store by
+		choosing a category!</p>
+
+	<ul class="nav nav-tabs">
+		{{#categories}}
+		<li class="{{Selected}}">
+			<a href="/category/{{Name}}">{{Name}}</a>
+		</li>
+		{{/categories}}
+	</ul>
+
+	<ul class="thumbnails">
+		{{#flowerList}}
+		<li class="span4">
+			<article class="thumbnail">
+				<img src="{{ImageUrl}}" />
+				<div class="info clearfix">
+					<h3>{{Name}}</h3>
+					<hr>
+					<b>Price:</span><span>{{Price}}</b>
+					<a class="btn pull-right btn-success" href="/cart/add/{{_id}}?ret={{../pageUrl}}">
+						<i class="icon-plus icon-white"></i> Add to cart
+					</a>
+				</div>
+			</article>
+		</li>
+		{{/flowerList}}
+	</ul>
+
+</section>
