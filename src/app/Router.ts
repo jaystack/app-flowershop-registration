@@ -27,27 +27,52 @@ export default function Router() {
         }
       }
 
-      app.get('/registration', (req, res, next) => {
-        console.log("# GET /registration")
+      app.get('/registration/register', (req, res, next) => {
+        console.log("# GET /registration/register")
         //res.sendFile(path.join(__dirname + '/../../views/registration.html'));
         res.render('registration')
       });
 
-      app.post('/registration', (req, res, next) => {
-        console.log("# POST /registration")
+      app.post('/registration/register', (req, res, next) => {
+        console.log("# POST /registration/register")
         const userObj = getUserObj(req.body);
         console.log(userObj)
-        user.insertOne(userObj)
-          .then(result => {
-            console.log(`then: Successful registration!`)
-            res.cookie('fs_isregistrationsuccessful', 'success').redirect('/')
-          })
-          .catch(err => {
-            console.log(`catch: An error occured during registration!`)
-            console.log(err)
-            res.sendStatus(500)
+        // user.insertOne(userObj)
+        //   .then(result => {
+        //     console.log(`then: Successful registration!`)
+        //     res.redirect('/registration/success')
+        //   })
+        //   .catch(err => {
+        //     console.log(`catch: An error occured during registration!`)
+        //     console.log(err)
+        //     res.redirect('/registration/error')
+        //   })
+        request.post(
+          {
+            url: `http://${endpoints.getServiceAddress('localhost:3007')}/data/registration`,
+            form: {
+              userName: req.body.signupName,
+              password: req.body.signupPassword,
+              email: req.body.signupEmail
+            },
+          },
+          (err, registrationRes, account) => {
+            if (err) return res.redirect('/registration/error') //res.sendStatus(500)
+            //if (registrationRes.statusCode !== 201) res.sendStatus(registrationRes.statusCode)
+            if (registrationRes.statusCode !== 201) res.status(registrationRes.statusCode)
+            res.redirect('/registration/success')
           })
       })
+
+      app.get('/registration/success', (req, res, next) => {
+        res.render('error', { message: "Successful registration!"})
+      })
+
+      app.get('/registration/error', (req, res, next) => {
+        res.render('error', { message: "An error occured during registration!"})
+      })
+
+
 
       app.post('/registration_wrk', (req, res, next) => {
         console.log("# POST /registration")
