@@ -1,6 +1,30 @@
 <section class="container">
 	<div class="row-fluid paddingb45">
 
+		<div class="cart span5">
+			<fieldset>
+				<legend>
+					<h4>Cart</h4>
+				</legend>
+				<div class="dropdown">
+					<div class="btn dropdown-toggle" data-toggle="dropdown">
+						<span>Cart value:</span>
+						<span>{{cartValue}}</span>
+						<span class="caret"></span>
+					</div>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						{{#cartItems}}
+						<li>
+							<span>{{Name}}</span>,
+							<span>{{Amount}}</span>,
+							<span>{{Price}}</span>
+						</li>
+						{{/cartItems}}
+					</ul>
+				</div>
+			</fieldset>
+		</div>
+
 		<div class="span5" data-bind="visible: registration.showSubmitRegistrationForm">
 			<form class="form-inline" action="/registration/register" method="POST">
 				<fieldset data-bind="with: registration">
