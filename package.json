@@ -6,6 +6,7 @@
   "typings": "lib/app/index",
   "dependencies": {
     "body-parser": "1.17.1",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "1.4.3",
     "corpjs-amqp": "0.0.6",
     "corpjs-config": "0.0.11",
@@ -13,12 +14,16 @@
     "corpjs-express": "0.0.9",
     "corpjs-logger": "0.0.13",
     "corpjs-mongodb": "0.0.5",
-    "corpjs-system": "0.0.36",
+    "corpjs-system": "0.0.37",
     "express": "4.14.0",
-    "mongoose": "^4.7.7"
+    "hbs": "4.0.1",
+    "mongoose": "^4.7.7",
+    "request": "^2.80.0"
   },
   "devDependencies": {
+    "@types/connect-flash": "0.0.31",
     "@types/node-uuid": "0.0.28",
+    "@types/request": "0.0.41",
     "typescript": "2.2.1"
   },
   "scripts": {
