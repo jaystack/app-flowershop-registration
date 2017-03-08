@@ -49,7 +49,7 @@ export default function Router() {
         //   })
         request.post(
           {
-            url: `http://${endpoints.getServiceAddress('localhost:3007')}/data/registration`,
+            url: `http://${endpoints.getServiceAddress('localhost:3003')}/data/user`,
             form: {
               userName: req.body.signupName,
               password: req.body.signupPassword,
@@ -60,7 +60,7 @@ export default function Router() {
             if (err) return res.redirect('/registration/error') //res.sendStatus(500)
             //if (registrationRes.statusCode !== 201) res.sendStatus(registrationRes.statusCode)
             if (registrationRes.statusCode !== 201) res.status(registrationRes.statusCode)
-            res.redirect('/registration/success')
+            res.redirect('/')
           })
       })
 
