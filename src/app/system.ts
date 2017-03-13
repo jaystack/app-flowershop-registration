@@ -5,12 +5,9 @@ import Router from './Router'
 import System from 'corpjs-system'
 import Logger from 'corpjs-logger'
 import MongoDb from 'corpjs-mongodb'
-const {name} = require('../../package.json')
+const { name } = require('../../package.json')
 
-const inDevelopment = process.env.NODE_ENV === 'dev'
-process.on('unhandledRejection', err => console.error(err))
-
-export default new System({ exitOnError: !inDevelopment })
+export default new System({ name })
     .add('config', new Config()
         .add(config => loaders.require({ path: './config/default.js', mandatory: true })))
     .add('logger', Logger()).dependsOn({ component: 'config', source: 'logger', as: 'config' })
@@ -19,7 +16,4 @@ export default new System({ exitOnError: !inDevelopment })
     .add('app', App())
     .add('router', Router()).dependsOn('app', 'endpoints', 'logger', 'mongodb')
     .add('server', Server()).dependsOn('app', 'router', { component: 'config', source: 'server', as: 'config' })
-    .on('componentStart', (componentName: string) => console.log(`Started component: ${componentName}`))
-    .on('componentStop', (componentName: string) => console.log(`Stopped component: ${componentName}`))
-    .on('start', resources => console.log(`Started service: ${name}`))
-    .on('stop', err => console.log(`Stopped service: ${name}`, err || ''))
+    .logAllEvents()
