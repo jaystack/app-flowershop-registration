@@ -56,10 +56,14 @@ export default function Router() {
               email: req.body.signupEmail
             },
           },
-          (err, registrationRes, account) => {
+          (err, userRes, user) => {
+            console.log("/registration/register")
+            console.log(err)
+            console.log(userRes.statusCode)
+            console.log(user)
             if (err) return res.redirect('/registration/error') //res.sendStatus(500)
-            //if (registrationRes.statusCode !== 201) res.sendStatus(registrationRes.statusCode)
-            if (registrationRes.statusCode !== 201) res.status(registrationRes.statusCode)
+            //if (userRes.statusCode !== 201) res.sendStatus(userRes.statusCode)
+            if (userRes.statusCode !== 201) res.status(userRes.statusCode)
             res.redirect('/')
           })
       })
