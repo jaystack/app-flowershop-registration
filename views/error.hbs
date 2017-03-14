@@ -1,3 +1,46 @@
-<h3>{{message}}</h3>
-<h4>{{error.status}}</h4>
-<pre>{{error.stack}}</pre>
+<section class="container">
+	<div class="row-fluid paddingb45">
+
+		<div class="cart span5">
+			<fieldset>
+				<legend>
+					<h4>Cart</h4>
+				</legend>
+				<div class="dropdown">
+					<div class="btn dropdown-toggle" data-toggle="dropdown">
+						<span>Cart value:</span>
+						<span>{{cartValue}}</span>
+						<span class="caret"></span>
+					</div>
+					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+						{{#cartItems}}
+						<li>
+							<span>{{Name}}</span>,
+							<span>{{Amount}}</span>,
+							<span>{{Price}}</span>
+						</li>
+						{{/cartItems}}
+					</ul>
+				</div>
+			</fieldset>
+		</div>
+
+		<div class="span5" data-bind="visible: registration.showSubmitRegistrationForm">
+		{{!-- <div class="span5" data-bind="visible: cart.showSubmitOrderForm"> --}}
+			<form class="form-inline" action="/registration/registration" method="POST">
+				<fieldset data-bind="with: registration">
+				{{!-- <fieldset data-bind="with: cart"> --}}
+					<legend>
+						<h3>{{message}}</h3>
+            <h4>{{error.status}}</h4>
+            <pre>{{error.stack}}</pre>
+					</legend>
+					<a href="/" style="display: inline-block">
+						<span class="btn">OK</span>
+					</a>
+				</fieldset>
+			</form>
+		</div>
+
+	</div>
+</section>

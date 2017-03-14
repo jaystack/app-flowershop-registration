@@ -6,10 +6,13 @@ import * as mongoose from 'mongoose';
 //import flash = require('connect-flash')
 import request = require('request')
 
+import morganLogger = require('morgan')
+
 export default function Router() {
   return {
     async start({ app, endpoints, logger, mongodb: db }) {
       const { getServiceAddress } = endpoints
+      app.use(morganLogger('dev'))
       app.use(bodyParser.json());
       app.use(bodyParser.urlencoded({ extended: false }));
       //app.use(flash())
@@ -27,14 +30,10 @@ export default function Router() {
         }
       }
 
-      app.get('/registration/register', (req, res, next) => {
-        console.log("# GET /registration/register")
-        //res.sendFile(path.join(__dirname + '/../../views/registration.html'));
-        res.render('registration')
-      });
+      const router = express.Router()
 
-      app.post('/registration/register', (req, res, next) => {
-        console.log("# POST /registration/register")
+      router.post('^(/|/registration)$', (req, res, next) => {
+        console.log("# POST /registration/registration")
         const userObj = getUserObj(req.body);
         console.log(userObj)
         // user.insertOne(userObj)
@@ -57,25 +56,36 @@ export default function Router() {
             },
           },
           (err, userRes, user) => {
-            console.log("/registration/register")
+            console.log("(#POST) /registration/registration")
             console.log(err)
             console.log(userRes.statusCode)
             console.log(user)
-            if (err) return res.redirect('/registration/error') //res.sendStatus(500)
+            if (err) {
+              //return res.redirect('/registration/error') //res.sendStatus(500)
+              return res.render('error', { message: 'An error occured during registration!', error: err })
+            }
             //if (userRes.statusCode !== 201) res.sendStatus(userRes.statusCode)
             if (userRes.statusCode !== 201) res.status(userRes.statusCode)
-            res.redirect('/')
+            //res.redirect('/registration/success')
+            res.render('error', { message: "Successful registration!" })
           })
       })
 
-      app.get('/registration/success', (req, res, next) => {
-        res.render('error', { message: "Successful registration!"})
+      router.get('^(/|/registration)$', (req, res, next) => {
+        console.log("# GET /registration/registration")
+        //res.sendFile(path.join(__dirname + '/../../views/registration.html'));
+        res.render('registration')
+      });
+
+      router.get('/success', (req, res, next) => {
+        res.render('error', { message: "Successful registration!" })
       })
 
-      app.get('/registration/error', (req, res, next) => {
-        res.render('error', { message: "An error occured during registration!"})
+      router.get('/error', (req, res, next) => {
+        res.render('error', { message: "An error occured during registration!" })
       })
 
+      app.use('/registration/', router)
 
 
       app.post('/registration_wrk', (req, res, next) => {
