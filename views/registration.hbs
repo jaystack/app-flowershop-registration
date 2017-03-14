@@ -26,8 +26,10 @@
 		</div>
 
 		<div class="span5" data-bind="visible: registration.showSubmitRegistrationForm">
-			<form class="form-inline" action="/registration/register" method="POST">
+		{{!-- <div class="span5" data-bind="visible: cart.showSubmitOrderForm"> --}}
+			<form class="form-inline" action="/registration/registration" method="POST">
 				<fieldset data-bind="with: registration">
+				{{!-- <fieldset data-bind="with: cart"> --}}
 					<legend>
 						<h3>Registration</h3>
 					</legend>
