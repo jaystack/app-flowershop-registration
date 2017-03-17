@@ -1,0 +1,26 @@
+<section class="container">
+	<div class="row-fluid paddingb45">
+		<div class="cart span5">
+			<fieldset>
+				<form class="form-inline clearfix">
+						{{!-- <a href="{{registrationUrl}}" class="btn btn-info form-control pull-right" style="margin-left: 20px">Registration</a> --}}
+						{{#if showRegisterButton}}
+              <a href="/registration" class="btn btn-info form-control pull-left">
+                <i class="icon-plus-sign icon-white"></i> Register
+              </a>
+            {{/if}}
+            {{#if showRegResult}}
+            	<h3>{{message}}</h3>
+              {{#if isError}}
+                <h4>{{error.status}}</h4>
+                <pre>{{error.stack}}</pre>
+              {{/if}}
+              <a href="/registrationresults" class="btn btn-info form-control pull-left">
+                <i class="icon-plus-sign icon-white"></i> OK
+              </a>
+            {{/if}}
+				</form>
+			</fieldset>
+		</div>
+	</div>
+</section>
