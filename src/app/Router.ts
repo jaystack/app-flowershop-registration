@@ -49,16 +49,30 @@ export default function Router() {
       const router = express.Router()
 
       router.use((req, res, next) => {
-        let cart
+        let cart, regResult
+
         if (!!req.cookies && !!req.cookies["fs_cart"]) cart = (<any>req).cookies["fs_cart"]
         if (!cart) cart = { created: new Date(), items: [] }
         req['cart'] = cart
         console.log('#cart:')
         console.log(cart)
+
+        if (!!req.cookies && !!req.cookies["fs_reg_result"]) regResult = (<any>req).cookies["fs_reg_result"]
+        if (!regResult) regResult = {
+          message: "",
+          error: {},
+          showRegisterButton: true,
+          showRegResult: false,
+          isError: false
+        }
+        req['reg_result'] = regResult
+        console.log('#reg_result:')
+        console.log(regResult)
+
         next()
       })
 
-      router.post('^(/|/registration)$', (req, res, next) => {
+      router.post('/registration', (req, res, next) => {
         console.log("# POST /registration/registration")
         const userObj = getUserObj(req.body);
         console.log(userObj)
@@ -71,32 +85,33 @@ export default function Router() {
               email: req.body.signupEmail
             },
           },
-          (err, userRes, user) => {
+          (error, userRes, user) => {
             console.log("(#POST) /registration/registration")
-            console.log(err)
+            console.log(error)
             console.log(userRes.statusCode)
             console.log(user)
-            getFlowersById(req['cart'].items, (err, flowers) => {
-              console.log(`flowers: ${JSON.stringify(flowers)}`)
-              //if (err) { console.log(err); return res.sendStatus(500) }
-              let data = (!err || flowers.length > 0)
-                ? {
-                  cartValue: (flowers.reduce((a, b) => a + (b ? b.Price : 0), 0)).toFixed(2),
-                  cartItems: flowers,
-                }
-                : { cartValue: 0, cartItems:[] }
-              //res.render('error', { ...data, message: 'An error occured during registration!', error: err })
-              if (err) {
-                //return res.redirect('/registration/error') //res.sendStatus(500)
-                return res.render('error', { ...data, message: 'An error occured during registration!', error: err })
-              }
-              //if (userRes.statusCode !== 201) res.sendStatus(userRes.statusCode)
-              if (userRes.statusCode !== 201) res.status(userRes.statusCode)
-              //res.redirect('/registration/success')
-              res.render('error', { ...data, message: "Successful registration!" })
-            })
+            let message
+            if (error) {
+              logger.error(error)
+              message = "An error occured during registration!"
+            } else {
+              message = "Successful registration!"
+            }
+            req['reg_result'] = {
+              message,
+              error,
+              showRegisterButton: false,
+              showRegResult: true,
+              isError: (error) ? true : false
+            }
+            res.cookie('fs_reg_result', req['reg_result']).redirect('/')
           })
       })
+
+      router.get('/register', (req, res, next) => {
+        console.log("# GET /registration/register")
+        res.render('register', req['reg_result'])
+      });
 
       router.get('^(/|/registration)$', (req, res, next) => {
         console.log("# GET /registration/registration")
@@ -110,9 +125,20 @@ export default function Router() {
               cartItems: flowers,
             }
             : { cartValue: 0, cartItems:[] }
+          data = { ...data, ...req['reg_result'], isError: (err) ? true : false }
           res.render('registration', data)
         })
       });
+
+      router.get('/registrationresults', (req, res, next) => {
+        req['reg_result'] = {
+          message: "",
+          error: {},
+          showRegisterButton: true,
+          showRegResult: false
+        }
+        res.cookie('fs_reg_result', req['reg_result']).redirect('/')
+      })
 
       router.get('/success', (req, res, next) => {
         res.render('error', { message: "Successful registration!" })
@@ -123,81 +149,6 @@ export default function Router() {
       })
 
       app.use('/registration/', router)
-
-
-      app.post('/registration_wrk', (req, res, next) => {
-        console.log("# POST /registration")
-        const userObj = getUserObj(req.body);
-        console.log(userObj)
-        user.insertOne(userObj)
-          .then(result => {
-            console.log(`then: Successful registration!`)
-            request.post(
-              {
-                url: `http://${endpoints.getServiceAddress('localhost:3000')}/regsuccess`,
-                form: {
-                  message: 'Successful registration!',
-                  error: {}
-                },
-              }
-            )
-          })
-          .catch(err => {
-            console.log(`catch: An error occured during registration!`)
-            console.log(err)
-            request.post(
-              {
-                url: `http://${endpoints.getServiceAddress('localhost:3000')}/regerror`,
-                form: {
-                  message: 'An error occured during registration!',
-                  error: err
-                },
-              }
-            )
-          })
-      })
-
-      app.post('/registration_wrk0', (req, res, next) => {
-        console.log("# POST /registration")
-        const userObj = getUserObj(req.body);
-        console.log(userObj)
-        user.insertOne(userObj)
-          .then(result => {
-            console.log(`then: Successful registration!`)
-            //req.flash('message', 'Successful registration!')
-            //return res.render('error', { message: req.flash('message') })
-            return res.render('error', { message: 'Successful registration!', error: {} })
-            //return res.redirect(`http://${getServiceAddress('localhost:9000')}/`)
-          })
-          .catch(err => {
-            console.log(`catch: An error occured during registration!`)
-            console.log(err)
-            //req.flash('message', 'An error occured during registration! ' + err.message)
-            //return res.render('error', { message: req.flash('message') })
-            return res.render('error', { message: 'An error occured during registration!', error: err })
-            //return res.redirect(`http://${getServiceAddress('localhost:9000')}/`)
-          })
-      })
-
-      app.post('/registration_old', (req, res, next) => {
-        const userObj = getUserObj(req.body);
-        user.insertOne(userObj)
-          .then(result => {
-            //return res.send('Successful registration!')
-            // console.log(`then: http://${getServiceAddress('localhost:9000')}/`)
-            // res.writeHead(201, {Location: `http://${getServiceAddress('localhost:9000')}/`})
-            // return res.end()
-            return res.redirect(`http://${getServiceAddress('localhost:9000')}/`)
-          })
-          .catch(err => {
-            //return res.sendStatus(500)
-            // console.log(`catch: http://${getServiceAddress('localhost:9000')}/`)
-            // console.log(err)
-            // res.writeHead(500, {Location: `http://${getServiceAddress('localhost:9000')}/`})
-            // return res.end()
-            return res.redirect(`http://${getServiceAddress('localhost:9000')}/`)
-          })
-      });
     }
   }
 }

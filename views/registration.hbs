@@ -1,35 +1,9 @@
-<section class="container">
+<section class="block">
 	<div class="row-fluid paddingb45">
 
-		<div class="cart span5">
-			<fieldset>
-				<legend>
-					<h4>Cart</h4>
-				</legend>
-				<div class="dropdown">
-					<div class="btn dropdown-toggle" data-toggle="dropdown">
-						<span>Cart value:</span>
-						<span>{{cartValue}}</span>
-						<span class="caret"></span>
-					</div>
-					<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-						{{#cartItems}}
-						<li>
-							<span>{{Name}}</span>,
-							<span>{{Amount}}</span>,
-							<span>{{Price}}</span>
-						</li>
-						{{/cartItems}}
-					</ul>
-				</div>
-			</fieldset>
-		</div>
-
 		<div class="span5" data-bind="visible: registration.showSubmitRegistrationForm">
-		{{!-- <div class="span5" data-bind="visible: cart.showSubmitOrderForm"> --}}
 			<form class="form-inline" action="/registration/registration" method="POST">
 				<fieldset data-bind="with: registration">
-				{{!-- <fieldset data-bind="with: cart"> --}}
 					<legend>
 						<h3>Registration</h3>
 					</legend>
@@ -40,7 +14,7 @@
 					<input class="input-large" type="text" name="signupEmail" /><br />
 
 					<h5>Password</h5>
-					<input class="input-large" type="text" name="signupPassword" /><br />
+					<input class="input-large" type="password" name="signupPassword" /><br />
 					<hr>
 					<button  class="btn btn-info" type="submit">Create your account</button>
 
