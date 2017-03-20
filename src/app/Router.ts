@@ -33,12 +33,11 @@ export default function Router() {
       }
 
       const getFlowersById = ((ids: Array<string>, clb: Function) => {
-        let p = ids.map(flowerId => new Promise((resolv, reject) => {
+        let p = ids.map(flowerId => new Promise((resolve, reject) => {
           request.get({ url: `http://${endpoints.getServiceAddress('localhost:3003')}/data/flower(${flowerId})`, timeout: 4000 },
             (err, catRes, flower) => {
-              //console.log(`# flower: ${JSON.stringify(flower)}`)
-              if (err) {console.log(err); return reject(err)}
-              resolv(JSON.parse(flower))
+              if (err) {logger.warn(err); return reject(err)}
+              resolve(JSON.parse(flower))
             })
         }))
         Promise.all(p)
@@ -54,8 +53,6 @@ export default function Router() {
         if (!!req.cookies && !!req.cookies["fs_cart"]) cart = (<any>req).cookies["fs_cart"]
         if (!cart) cart = { created: new Date(), items: [] }
         req['cart'] = cart
-        console.log('#cart:')
-        console.log(cart)
 
         if (!!req.cookies && !!req.cookies["fs_reg_result"]) regResult = (<any>req).cookies["fs_reg_result"]
         if (!regResult) regResult = {
@@ -66,16 +63,12 @@ export default function Router() {
           isError: false
         }
         req['reg_result'] = regResult
-        console.log('#reg_result:')
-        console.log(regResult)
 
         next()
       })
 
       router.post('/registration', (req, res, next) => {
-        console.log("# POST /registration/registration")
         const userObj = getUserObj(req.body);
-        console.log(userObj)
         request.post(
           {
             url: `http://${endpoints.getServiceAddress('localhost:3003')}/data/user`,
@@ -86,13 +79,9 @@ export default function Router() {
             },
           },
           (error, userRes, user) => {
-            console.log("(#POST) /registration/registration")
-            console.log(error)
-            console.log(userRes.statusCode)
-            console.log(user)
             let message
             if (error) {
-              logger.error(error)
+              logger.warn(error)
               message = "An error occured during registration!"
             } else {
               message = "Successful registration!"
@@ -109,16 +98,11 @@ export default function Router() {
       })
 
       router.get('/register', (req, res, next) => {
-        console.log("# GET /registration/register")
         res.render('register', req['reg_result'])
       });
 
       router.get('^(/|/registration)$', (req, res, next) => {
-        console.log("# GET /registration/registration")
-        //res.sendFile(path.join(__dirname + '/../../views/registration.html'));
         getFlowersById(req['cart'].items, (err, flowers) => {
-          console.log(`flowers: ${JSON.stringify(flowers)}`)
-          //if (err) { console.log(err); return res.sendStatus(500) }
           let data = (!err || flowers.length > 0)
             ? {
               cartValue: (flowers.reduce((a, b) => a + (b ? b.Price : 0), 0)).toFixed(2),
