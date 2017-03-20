@@ -32,19 +32,6 @@ export default function Router() {
         }
       }
 
-      const getFlowersById = ((ids: Array<string>, clb: Function) => {
-        let p = ids.map(flowerId => new Promise((resolve, reject) => {
-          request.get({ url: `http://${endpoints.getServiceAddress('localhost:3003')}/data/flower(${flowerId})`, timeout: 4000 },
-            (err, catRes, flower) => {
-              if (err) {logger.warn(err); return reject(err)}
-              resolve(JSON.parse(flower))
-            })
-        }))
-        Promise.all(p)
-          .then((flowers) => { clb(null, flowers) })
-          .catch((err) => { clb(err) })
-      })
-
       const router = express.Router()
 
       router.use((req, res, next) => {
@@ -102,16 +89,8 @@ export default function Router() {
       });
 
       router.get('^(/|/registration)$', (req, res, next) => {
-        getFlowersById(req['cart'].items, (err, flowers) => {
-          let data = (!err || flowers.length > 0)
-            ? {
-              cartValue: (flowers.reduce((a, b) => a + (b ? b.Price : 0), 0)).toFixed(2),
-              cartItems: flowers,
-            }
-            : { cartValue: 0, cartItems:[] }
-          data = { ...data, ...req['reg_result'], isError: (err) ? true : false }
-          res.render('registration', data)
-        })
+        const data = { ...req['reg_result'], isError: false }
+        res.render('registration', data)
       });
 
       router.get('/registrationresults', (req, res, next) => {
@@ -119,19 +98,11 @@ export default function Router() {
           message: "",
           error: {},
           showRegisterButton: true,
-          showRegResult: false
+          showRegResult: false,
+          isError: false
         }
         res.cookie('fs_reg_result', req['reg_result']).redirect('/')
       })
-
-      router.get('/success', (req, res, next) => {
-        res.render('error', { message: "Successful registration!" })
-      })
-
-      router.get('/error', (req, res, next) => {
-        res.render('error', { message: "An error occured during registration!" })
-      })
-
       app.use('/registration/', router)
     }
   }
