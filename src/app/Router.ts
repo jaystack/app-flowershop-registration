@@ -32,19 +32,6 @@ export default function Router() {
         }
       }
 
-      const getFlowersById = ((ids: Array<string>, clb: Function) => {
-        let p = ids.map(flowerId => new Promise((resolv, reject) => {
-          request.get({ url: `http://${endpoints.getServiceAddress('localhost:3003')}/data/flower(${flowerId})`, timeout: 4000 },
-            (err, catRes, flower) => {
-              if (err) {logger.warn(err); return reject(err)}
-              resolv(JSON.parse(flower))
-            })
-        }))
-        Promise.all(p)
-          .then((flowers) => { clb(null, flowers) })
-          .catch((err) => { clb(err) })
-      })
-
       const router = express.Router()
 
       router.use((req, res, next) => {
@@ -68,7 +55,7 @@ export default function Router() {
       })
 
       router.post('/registration', (req, res, next) => {
-        const userObj = getUserObj(req.body);
+        const userObj = getUserObj(req.body)
         request.post(
           {
             url: `http://${endpoints.getServiceAddress('localhost:3003')}/data/user`,
@@ -79,16 +66,21 @@ export default function Router() {
             },
           },
           (error, userRes, user) => {
-            let message
+            let message, error_
             if (error) {
               logger.warn(error)
               message = "An error occured during registration!"
+              error_ = {
+                status: error.message,
+                stack: error.stack
+              }
             } else {
               message = "Successful registration!"
+              error_ = {}
             }
             req['reg_result'] = {
               message,
-              error,
+              error: error_,
               showRegisterButton: false,
               showRegResult: true,
               isError: (error) ? true : false
@@ -99,37 +91,23 @@ export default function Router() {
 
       router.get('/register', (req, res, next) => {
         res.render('register', req['reg_result'])
-      });
+      })
 
-      router.get('^(/|/registration)$', (req, res, next) => {
-        getFlowersById(req['cart'].items, (err, flowers) => {
-          let data = (!err || flowers.length > 0)
-            ? {
-              cartValue: (flowers.reduce((a, b) => a + (b ? b.Price : 0), 0)).toFixed(2),
-              cartItems: flowers,
-            }
-            : { cartValue: 0, cartItems:[] }
-          data = { ...data, ...req['reg_result'], isError: (err) ? true : false }
-          res.render('registration', data)
-        })
-      });
+      //router.get('^(/|/registration)$', (req, res, next) => {
+      router.get('/registration', (req, res, next) => {
+        const data = { ...req['reg_result'], isError: false }
+        res.render('registration', data)
+      })
 
       router.get('/registrationresults', (req, res, next) => {
         req['reg_result'] = {
           message: "",
           error: {},
           showRegisterButton: true,
-          showRegResult: false
+          showRegResult: false,
+          isError: false
         }
         res.cookie('fs_reg_result', req['reg_result']).redirect('/')
-      })
-
-      router.get('/success', (req, res, next) => {
-        res.render('error', { message: "Successful registration!" })
-      })
-
-      router.get('/error', (req, res, next) => {
-        res.render('error', { message: "An error occured during registration!" })
       })
 
       app.use('/registration/', router)
